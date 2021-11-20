@@ -1,6 +1,7 @@
 
 
 {% extends "thefav/base.html" %}
+{% load crispy_forms_tags %}
 {% block content%}
     
      <article class="media content-section">
@@ -18,7 +19,56 @@
           <p class="article-content">{{ object.content }}</p>
         </div>
     </article>
+
+    <!--comments-->
+    <div id="comments_section">
+    {%if user.is_authenticated%}
+     
+    <form method="POST">
+      {% csrf_token %}
+      <div class="form-group">
+        {{comment_form}}
+        <a class="btn btn-info" href="{% url 'comment' object.id %}">
+            Add an comment</a>
+          <i class="fas fa-comments"></i>
+        </button>
+
+         
+          <i class="fas fa-comments"></i>
+        </button>
+      </div>
+    </form>
+     
+    {% else %}
+     <a href={% url "login" %}>log in</a> to add a comment
+    {% endif %}
+
+      {% if post.comments.all %}
+      <hr>
+      <ul>
+        {% for comment in post.comments.all %}
+        <li>
+          <div>
+            <span>
+              <strong class="text-info">
+                {{comment.author}}
+                at {{comment.date_posted}}
+              </strong>
+            </span>
+            <p>
+              {{comment.content}}
+            </p>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <small class="text-secondary">No comments yet...</small>
+      {% endif %}
+    </div>
     
+      
+
 
     
 {% endblock content %}
